@@ -1,0 +1,19 @@
+{
+  "name": "protocol",
+  "private": true,
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-cssmin": "^0.12.0",
+    "grunt-contrib-htmlmin": "^0.4.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-haml2html": "^0.3.1",
+    "grunt-markdown": "^0.7.0",
+    "grunt-newer": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}

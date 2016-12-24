@@ -1,0 +1,164 @@
+
+.no-bullets {
+  list-style-type: none;
+}
+
+.menu {
+  display: none;
+  @media (min-width: 1300px) {
+    display: inherit;
+  }
+
+  $active-color: black;
+
+  padding-left: 0px;
+
+
+    li {
+      a {
+        padding-left: 20px;
+      }
+    }
+
+
+  ul.nested {
+    margin-top: 6px;
+    padding-left:20px;
+
+  }
+
+  position: fixed;
+  list-style-type: none;
+  right: 100px;
+  margin-top: 30px !important;
+  width: 200px;
+
+  font-size: 13px;
+
+  li {
+    margin-bottom: 6px;
+    a {
+      color: rgba(black, 0.5);
+      font-weight: bold;
+    }
+  }
+
+  li.active {
+    a.active {
+      &:first-child {
+        color: $active-color;
+        font-weight: bold;
+        border-left: 2px solid $active-color;
+      }
+    }
+  }
+}
+
+.email-subscribe-wrapper {
+
+  z-index: 100;
+  background-color: white;
+
+  .content {
+    border: 1px solid rgba(black, 0.2);
+    padding: 15px 20px;
+    padding-bottom: 0px;
+
+    .social {
+      margin-top: 8px;
+      margin-bottom: 10px;
+
+      a {
+        color: black;
+        margin-right: 10px;
+      }
+    }
+
+    .title {
+      font-weight: bold;
+      line-height: 20px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      margin-top: 6px;
+      line-height: 18px;
+    }
+
+    #mc_embed_signup form {
+      padding: 15px 0px 5px 0px;
+
+    }
+
+    #mc-embedded-subscribe {
+      width: 100%;
+      background-color: black;
+      border-radius: 0px;
+    }
+
+    #mce-EMAIL {
+      width: 100%;
+      border-radius: 0px;
+      border-color: rgba(black, 0.2);
+      height: 35px;
+      padding-left: 10px;
+    }
+  }
+
+  position: relative;
+  max-width: 620px;
+  margin-bottom: 40px;
+
+  @media (min-width: 1300px) {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    margin-bottom: 0px;
+    max-width: 350px;
+  }
+}
+
+.block-link {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.endpoints {
+
+  .endpoint {
+    margin-bottom: 30px;
+
+    .path {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    $meta-indent: 12px;
+
+    .desc {
+      margin-left: $meta-indent;
+    }
+
+    .params {
+      font-style: italic;
+      margin-left: $meta-indent;
+    }
+
+    .responses {
+      code {
+        font-size: 13px;
+      }
+      font-size: 15px;
+
+      border-top: 1px solid black;
+      margin-top: 8px;
+      padding-top: 6px;
+      margin-left: $meta-indent;
+
+      .response {
+
+      }
+    }
+
+  }
+}
