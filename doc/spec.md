@@ -515,7 +515,3 @@ When presenting, the client must remove local encryption from the item and all o
 When un-presenting an item, the client must encrypt the item and all other referenced items the client deems related.
 
 When the server returns an item to the client, it sends back an optional computed value for `presentation_url`. This URL is decided by the server. The server should also know how to respond to this URL.
-
-### [](#contact)Contact
-
-[sf@bitar.io](mailto:sf@bitar.io)
