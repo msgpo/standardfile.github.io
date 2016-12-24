@@ -4,7 +4,7 @@ Many of us today are digital nomads: we go from app to app, service to service, 
 
 Standard File is one account for every human. This account can store almost any data type, and supports strong encryption and privacy by default.
 
-Why would I want a Standard File account?
+Why would you want a Standard File account?
 
 1. **Convenience**. You don't have to manage hundreds of different accounts, and worry about backups if one of those services go offline. Your one Standard File account manages all your data across all application that supports the Standard File format.
 1. **Data lifetime**. The Standard File format is a growth-resistant format. Because it is a generalized and abstracted system, it can handle almost any application type without needing to change the data format on the server. This means your data is always easy to parse by applications, and because the format is simple, it makes it easy for new developers to create new applications that parse your data and offer new utilities on top of this data.
@@ -13,7 +13,7 @@ Why would I want a Standard File account?
 4. **Privacy**. You can choose any Standard File hosting provider, or run a Standard File server of your own. Because the choice is yours, you can always go with the provider that promises the highest level of privacy. And if ultimately that isn't enough for you, you can easily run your own Standard File system for 100% privacy control.
 
 
-## Getting Started
+<h2><a id='getting-started'></a>Getting Started</h2>
 
 To get started with a Standard File account, find apps that support the Standard File format.
 
@@ -29,7 +29,7 @@ Simply register for a Standard File account using one of the available apps.
 
 *Note that because your data is encrypted before being stored in the server above, you don't have to trust the server. Your data is secure by default.*
 
-## For Developers
+<h2><a id='developers'></a>Developers</h2>
 
 To build a quality application, most app developers today have to implement not only their own front-end clients, but also a backend architecture to handle model storage for their specific schema. With the growing trend of 'experimental' and 'single-use' applications, which frequently make their rounds on sites like Product Hunt, it becomes impractical to build a new server infrastructure for every application.
 
