@@ -476,28 +476,31 @@ Note that when encrypting/decrypting data, keys should be converted to the prope
 
 As general rules:
 
-1. Anything *encrypted* (using AES) is stored as Base64.
+1. Anything *encrypted* (using AES) is stored as base64.
 2. Keys are stored as Hex.
-3. Keys that are encrypted (using AES) are stored as Base64.
+3. Keys that are encrypted (using AES) are stored as base64.
 
 For every item, if item is not public:
 
 1.  Generate a random 512 bit key `item_key` (in hex format).
 2.  Split `item_key` in half; set encryption key `ek = first half` and authentication key `ak = second half`.
-3.  Encrypt `content` using AES-CBC-256 and `ek` as the secret. Encode result in base64.
-4.  Compute `auth_hash = HMAC-SHA256:hex(base64 encrypted content string, ak)`.
-5.  Encrypt `item_key` with user’s master key `mk`: `enc_item_key = AES-CBC-256(item_key, mk)`. Encode in base64.
+3.  Encrypt `content` using AES-CBC-256:base64 and `ek` as the secret. Prepend the literal string "001" to the encoded string to indicate that it is encrypted.
+4.  Compute `auth_hash = HMAC-SHA256:hex(base64-encrypted-content-string, ak)`.
+5.  Encrypt `item_key` with user’s master key `mk`: `enc_item_key = AES-CBC-256.base64(item_key, mk)`.
 6.  Send `content`, `enc_item_key`, and `auth_hash` to the server.
 
 **If item is public or belongs to public item:**
 
-1.  Set `enc_item_key` and `auth_hash` to null and send `content` unencrypted as base64 JSON string to server.
+1.  Set `enc_item_key` and `auth_hash` to null.
+2.  Send `content` as a base64 encoded JSON string with the literal string "000" prepended to indicating it is not encrypted to the server.
 
 **Decryption:**
 
-1.  Decrypt base64 string `enc_item_key` using hex string `mk` to get hex string `item_key`.
+Check the first 3 characters of the `content` string. If it is equal to "001", `content` is encrypted, and should be decrypted:
+
+1.  Decrypt `enc_item_key` with AES-CBC-256:base64(enc_item_key, mk)` to get hex string `item_key`.
 2.  Split `item_key` in half; set encryption key `ek = first half` and authentication key `ak = second half`.
-3.  Verify authenticity of message by computing `auth_hash = HMAC-SHA256:hex(encrypted content, ak)`. If this value matches the `auth_hash` value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.
+3.  Verify authenticity of message by computing `auth_hash = HMAC-SHA256:hex(encrypted-content, ak)`. If this value matches the `auth_hash` value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.
 4.  Decrypt content using `ek`.
 
 **Server-side:**

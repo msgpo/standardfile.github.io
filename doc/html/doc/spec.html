@@ -570,28 +570,30 @@ mk = key.<span class="hljs-function"><span class="hljs-title">substring</span><s
 <p>Note that when encrypting/decrypting data, keys should be converted to the proper format your platform function supports. It&#39;s best to convert keys to binary data before running through any encryption/hashing algorithm.</p>
 <p>As general rules:</p>
 <ol>
-<li>Anything <em>encrypted</em> (using AES) is stored as Base64.</li>
+<li>Anything <em>encrypted</em> (using AES) is stored as base64.</li>
 <li>Keys are stored as Hex.</li>
-<li>Keys that are encrypted (using AES) are stored as Base64.</li>
+<li>Keys that are encrypted (using AES) are stored as base64.</li>
 </ol>
 <p>For every item, if item is not public:</p>
 <ol>
 <li>Generate a random 512 bit key <code>item_key</code> (in hex format).</li>
 <li>Split <code>item_key</code> in half; set encryption key <code>ek = first half</code> and authentication key <code>ak = second half</code>.</li>
-<li>Encrypt <code>content</code> using AES-CBC-256 and <code>ek</code> as the secret. Encode result in base64.</li>
-<li>Compute <code>auth_hash = HMAC-SHA256:hex(base64 encrypted content string, ak)</code>.</li>
-<li>Encrypt <code>item_key</code> with user’s master key <code>mk</code>: <code>enc_item_key = AES-CBC-256(item_key, mk)</code>. Encode in base64.</li>
+<li>Encrypt <code>content</code> using AES-CBC-256:base64 and <code>ek</code> as the secret. Prepend the literal string &quot;001&quot; to the encoded string to indicate that it is encrypted.</li>
+<li>Compute <code>auth_hash = HMAC-SHA256:hex(base64-encrypted-content-string, ak)</code>.</li>
+<li>Encrypt <code>item_key</code> with user’s master key <code>mk</code>: <code>enc_item_key = AES-CBC-256.base64(item_key, mk)</code>.</li>
 <li>Send <code>content</code>, <code>enc_item_key</code>, and <code>auth_hash</code> to the server.</li>
 </ol>
 <p><strong>If item is public or belongs to public item:</strong></p>
 <ol>
-<li>Set <code>enc_item_key</code> and <code>auth_hash</code> to null and send <code>content</code> unencrypted as base64 JSON string to server.</li>
+<li>Set <code>enc_item_key</code> and <code>auth_hash</code> to null.</li>
+<li>Send <code>content</code> as a base64 encoded JSON string with the literal string &quot;000&quot; prepended to indicating it is not encrypted to the server.</li>
 </ol>
 <p><strong>Decryption:</strong></p>
+<p>Check the first 3 characters of the <code>content</code> string. If it is equal to &quot;001&quot;, <code>content</code> is encrypted, and should be decrypted:</p>
 <ol>
-<li>Decrypt base64 string <code>enc_item_key</code> using hex string <code>mk</code> to get hex string <code>item_key</code>.</li>
+<li>Decrypt <code>enc_item_key</code> with AES-CBC-256:base64(enc_item_key, mk)<code>to get hex string</code>item_key`.</li>
 <li>Split <code>item_key</code> in half; set encryption key <code>ek = first half</code> and authentication key <code>ak = second half</code>.</li>
-<li>Verify authenticity of message by computing <code>auth_hash = HMAC-SHA256:hex(encrypted content, ak)</code>. If this value matches the <code>auth_hash</code> value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.</li>
+<li>Verify authenticity of message by computing <code>auth_hash = HMAC-SHA256:hex(encrypted-content, ak)</code>. If this value matches the <code>auth_hash</code> value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.</li>
 <li>Decrypt content using <code>ek</code>.</li>
 </ol>
 <p><strong>Server-side:</strong></p>
