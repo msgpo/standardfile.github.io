@@ -15,9 +15,7 @@ Why would you want a Standard File account?
 
 <h2><a id='getting-started'></a>Getting Started</h2>
 
-To get started with a Standard File account, find apps that support the Standard File format.
-
-For a list of apps that use Standard File today, [see here]().
+To get started with a Standard File account, find [apps](https://standardnotes.org) that support the Standard File format.
 
 These apps will ask you for a Standard File server location. You can use any of these free servers:
 
@@ -41,8 +39,7 @@ One can build any client application with the same Standard File server.
 
 The future vision of Standard File is for every person to have their own Standard File server, whether shared or private, that allows them to use one account for all their data, across multiple clients that offer different utilities. For example, one client could be a notes app. Another could be a desktop file sync. And yet another could be a photos manager. All these apps could be built off the same Standard File server. This makes it so that developers don't have to worry about building a secure back end system, and so that end users don't have to worry about data security and ownership.
 
-Today, [a few applications]() have already been built on top of Standard File.
-
+Today, [a robust notes system](https://standardnotes.org) has already been built on top of Standard File.
 
 # Protocol Specification
 
