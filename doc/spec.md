@@ -21,11 +21,13 @@ These apps will ask you for a Standard File server location. You can use any of 
 
 https://n1.standardfile.org
 
-https://n3.standardfile.org.uk
+https://n3.standardfile.org.uk (in development)
 
 Simply register for a Standard File account using one of the available apps.
 
-*Note that because your data is encrypted before being stored in the server above, you don't have to trust the server. Your data is secure by default.*
+*Note: because your data is encrypted before being sent to the server, it is not necessarily important to "trust" these servers. This means you can choose any server and rest assured that your data is secure.*
+
+If you're tech savvy, you can even [host your own Standard File server](https://github.com/standardfile/ruby-server/wiki/Deploying-a-private-Standard-File-server-with-Amazon-EC2-and-Nginx).
 
 <h2><a id='developers'></a>Developers</h2>
 
