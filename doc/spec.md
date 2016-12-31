@@ -515,3 +515,14 @@ When presenting, the client must remove local encryption from the item and all o
 When un-presenting an item, the client must encrypt the item and all other referenced items the client deems related.
 
 When the server returns an item to the client, it sends back an optional computed value for `presentation_url`. This URL is decided by the server. The server should also know how to respond to this URL.
+
+
+# Next Steps
+
+Check out the [client development guide](https://github.com/standardnotes/standardnotes.github.io/blob/master/doc/client-dev-guide.md) for a practical guide to developing an application on top of Standard File.
+
+Join the [Slack group](https://slackin-ekhdyygaer.now.sh/) to discuss implementation details and ask any questions you may have.
+
+You can also email [standardnotes@bitar.io](mailto:standardnotes@bitar.io).
+
+Follow [@standardnotes](https://twitter.com/standardnotes) for updates and announcements.
