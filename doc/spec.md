@@ -6,11 +6,11 @@ Standard File is one account for every human. This account can store almost any 
 
 Why would you want a Standard File account?
 
-1. **Convenience**. You don't have to manage hundreds of different accounts, and worry about backups if one of those services go offline. Your one Standard File account manages all your data across all application that supports the Standard File format.
-1. **Data lifetime**. The Standard File format is a growth-resistant format. Because it is a generalized and abstracted system, it can handle almost any application type without needing to change the data format on the server. This means your data is always easy to parse by applications, and because the format is simple, it makes it easy for new developers to create new applications that parse your data and offer new utilities on top of this data.
+1. **Convenience**. You don't have to manage hundreds of different accounts, and worry about backups if one of those services go offline. Your one Standard File account manages all your data across all applications that support the Standard File format.
+1. **Data lifetime**. The Standard File format is a growth-resistant format. Because it is a generalized and abstracted system, it can handle almost any application type without needing to change. This means your data is always easy to parse by applications. And, because the data format is simple, this makes it easy for developers to create new applications that parse your data and offer new utilities on top of this data.
 2. **More choices**. Today, when a company offers a service that's useful, it's hard to move to something else, even if you really want to. The Standard File system allows app developers to focus on creating great applications, without having to worry about managing servers. This means a richer ecosystem of great applications that don't lock you in.
 3. **Security**. All apps that use the Standard File system are required to encrypt data locally before sending that data to the server. This means that servers do not have to be trusted. In fact, even if your data was stolen from a hacked server, that data would be unreadable and useless to an attacker.
-4. **Privacy**. You can choose any Standard File hosting provider, or run a Standard File server of your own. Because the choice is yours, you can always go with the provider that promises the highest level of privacy. And if ultimately that isn't enough for you, you can easily run your own Standard File system for 100% privacy control.
+4. **Privacy**. You can choose any Standard File hosting provider, or run a Standard File server of your own. Because the choice is yours, you can always go with the provider that offers the highest level of privacy. And if ultimately that isn't enough for you, you can easily run your own Standard File system for 100% privacy control.
 
 
 <h2><a id='getting-started'></a>Getting Started</h2>
