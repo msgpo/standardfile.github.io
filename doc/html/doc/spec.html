@@ -275,6 +275,11 @@
 <td>The name of this presentation, if applicable. (See Sharing for details).</td>
 </tr>
 <tr>
+<td>deleted</td>
+<td>Bool</td>
+<td>Whether the model has been deleted.</td>
+</tr>
+<tr>
 <td>created_at</td>
 <td>Date</td>
 <td>The date this item was created.</td>
@@ -366,39 +371,36 @@
 <pre><code>{"<span class="hljs-attribute">errors</span>" : <span class="hljs-value">[]</span>}
 </code></pre><h1><a id='api-items'></a>Items</h1>
 
-<h4 id="get-items">GET items</h4>
-<p><strong>Gets all items for current user.</strong></p>
-<p><em>Params: updated_after  — Optional. Return only items modified after a certain date.</em></p>
-<p>Responses</p>
-<p>200</p>
-<pre><code>{"<span class="hljs-attribute">items</span>" : <span class="hljs-value">[]</span>}
-</code></pre><p>5xx</p>
-<pre><code>{"<span class="hljs-attribute">errors</span>" : <span class="hljs-value">[]</span>}
-</code></pre><h4 id="get-items-id">GET items/:id</h4>
-<p><strong>Gets a particular item.</strong></p>
+
+<h4 id="post-items-sync">POST items/sync</h4>
+<p><strong>Saves local changes as well as retrieves remote changes.</strong></p>
 <p><em>Params:</em></p>
+<ul>
+<li><code>items</code>: An array of items</li>
+<li><code>sync_token</code>: the sync token returned from the previous sync call. Leave empty if first sync.</li>
+</ul>
 <p>Responses</p>
 <p>200</p>
-<pre><code>{"<span class="hljs-attribute">item</span>" : <span class="hljs-value">{}</span>}
+<pre><code>{"<span class="hljs-attribute">retrieved_items</span>" : <span class="hljs-value">[]</span>, "<span class="hljs-attribute">saved_items</span>" : <span class="hljs-value">[]</span>, "<span class="hljs-attribute">sync_token</span>" : <span class="hljs-value"><span class="hljs-string">""</span></span>}
 </code></pre><p>5xx</p>
 <pre><code>{"<span class="hljs-attribute">errors</span>" : <span class="hljs-value">[]</span>}
-</code></pre><h4 id="post-items">POST items</h4>
-<p><strong>Creates or updates an item. This endpoint must be able to handle both a single item or an array of items. If the item doesn&#39;t exist, it should be created.</strong></p>
-<p><em>Params: item or items  — A single item or an array of items</em></p>
-<p>Responses</p>
-<p>200</p>
-<pre><code>{"<span class="hljs-attribute">items</span>" : <span class="hljs-value">{}</span>}
-</code></pre><p>5xx</p>
-<pre><code>{"<span class="hljs-attribute">errors</span>" : <span class="hljs-value">[]</span>}
-</code></pre><h4 id="delete-items-id">DELETE items/:id</h4>
-<p><strong>Deletes an item.</strong></p>
-<p><em>Params:</em></p>
-<p>Responses</p>
-<p>204</p>
-<pre><code><span class="hljs-title">No</span> Content
-</code></pre><p>5xx</p>
-<pre><code>{"<span class="hljs-attribute">errors</span>" : <span class="hljs-value">[]</span>}
-</code></pre><h1><a id='import-export'></a>Import/Export</h1>
+</code></pre><h3 id="sync-discussion">Sync Discussion</h3>
+<p><strong>Deletion:</strong></p>
+<ul>
+<li>Clients: set <code>deleted</code> equal to <code>true</code> and sync. When receiving an item that is <code>deleted</code>, remove it from the local database immediately.</li>
+<li>Servers: if syncing an item that is <code>deleted</code>, clear out its <code>content</code>, <code>enc_item_key</code>, and <code>auth_hash</code> fields, set <code>deleted</code> to true, and save.</li>
+</ul>
+<p><strong>Presentations:</strong></p>
+<p>For sharing an item, the client can propose a <code>presentation_name</code> manually, however, the client can&#39;t be sure a conflict exists. Instead, the client should set <code>presentation_name</code> to
+&quot;_auto_&quot;. When a server detects a presentation name set to &quot;_auto_&quot;, it should create a unique presentation name based on the contents of the item.</p>
+<p><strong>Sync completion:</strong></p>
+<p>Upon sync completion, the client should handle each response item as follows:</p>
+<ul>
+<li><code>retrieved_items</code>: these items are new or have been modified since last sync and should be merged or created locally.</li>
+<li><code>saved_items</code>: saved items are dirty items that were sent to the sync request. These items should not be merged in their entirety upon completion. Instead, only their metadata should be merged. For example, if at Point A the client syncs a Note item that a user is still typing, and at Point B the sync completes, the user could have typed more content in between A and B. Thus, if you merge all content, the user&#39;s progress in between A and B will be lost. However, if you merge just the metadata, then this issue does not occur.</li>
+<li><code>sync_token</code>: this token should be saved when it is received and sent to subsequent sync requests. This token should also be persisted locally between app sessions. For first time sync, no token should be provided.</li>
+</ul>
+<h1><a id='import-export'></a>Import/Export</h1>
 
 <p>The export file is a JSON file of all the user&#39;s items, unencrypted.</p>
 <p><strong>Format:</strong></p>

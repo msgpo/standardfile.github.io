@@ -111,6 +111,7 @@ Item models have the following properties:
 | enc_item_key | String (Base64) | The locally encrypted encryption key for this item. |
 | auth_hash | String (Hex) | The HMAC authentication hash for the encrypted content of this item. |
 | presentation_name | String | The name of this presentation, if applicable. (See Sharing for details). |
+| deleted | Bool | Whether the model has been deleted. |
 | created_at | Date | The date this item was created. |
 | updated_at | Date | The date this item was modified. |
 
@@ -248,55 +249,21 @@ Responses
 
 <h1><a id='api-items'></a>Items</h1>
 
-#### GET items
-**Gets all items for current user.**
 
-*Params: updated_after  — Optional. Return only items modified after a certain date.*
-
-Responses
-
-200
-
-```
-{"items" : []}
-```
-
-5xx
-
-```
-{"errors" : []}
-```
-
-#### GET items/:id
-**Gets a particular item.**
+#### POST items/sync
+**Saves local changes as well as retrieves remote changes.**
 
 *Params:*
 
-Responses
-
-200
-
-```
-{"item" : {}}
-```
-
-5xx
-
-```
-{"errors" : []}
-```
-
-#### POST items
-**Creates or updates an item. This endpoint must be able to handle both a single item or an array of items. If the item doesn't exist, it should be created.**
-
-*Params: item or items  — A single item or an array of items*
+- `items`: An array of items
+- `sync_token`: the sync token returned from the previous sync call. Leave empty if first sync.
 
 Responses
 
 200
 
 ```
-{"items" : {}}
+{"retrieved_items" : [], "saved_items" : [], "sync_token" : ""}
 ```
 
 5xx
@@ -305,25 +272,25 @@ Responses
 {"errors" : []}
 ```
 
-#### DELETE items/:id
-**Deletes an item.**
+### Sync Discussion
 
-*Params:*
+**Deletion:**
 
-Responses
+- Clients: set `deleted` equal to `true` and sync. When receiving an item that is `deleted`, remove it from the local database immediately.
+- Servers: if syncing an item that is `deleted`, clear out its `content`, `enc_item_key`, and `auth_hash` fields, set `deleted` to true, and save.
 
-204
+**Presentations:**
 
-```
-No Content
+For sharing an item, the client can propose a `presentation_name` manually, however, the client can't be sure a conflict exists. Instead, the client should set `presentation_name` to
+"\_auto\_". When a server detects a presentation name set to "\_auto\_", it should create a unique presentation name based on the contents of the item.
 
-```
+**Sync completion:**
 
-5xx
+Upon sync completion, the client should handle each response item as follows:
 
-```
-{"errors" : []}
-```
+- `retrieved_items`: these items are new or have been modified since last sync and should be merged or created locally.
+- `saved_items`: saved items are dirty items that were sent to the sync request. These items should not be merged in their entirety upon completion. Instead, only their metadata should be merged. For example, if at Point A the client syncs a Note item that a user is still typing, and at Point B the sync completes, the user could have typed more content in between A and B. Thus, if you merge all content, the user's progress in between A and B will be lost. However, if you merge just the metadata, then this issue does not occur.
+- `sync_token`: this token should be saved when it is received and sent to subsequent sync requests. This token should also be persisted locally between app sessions. For first time sync, no token should be provided.
 
 <h1><a id='import-export'></a>Import/Export</h1>
 
