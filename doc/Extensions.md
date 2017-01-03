@@ -10,6 +10,7 @@ The core interface of an extension is a primary URL that supports GET requests. 
 When a user enters the URL into the client application, the client will perform a GET request to that URL. The server will return actions available to the extension.
 
 GET extension_url
+
 Params: 
 
 - item_uuid (optional)
