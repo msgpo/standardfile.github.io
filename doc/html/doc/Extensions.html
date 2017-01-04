@@ -1,0 +1,381 @@
+<!DOCTYPE  html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>doc</title>
+    <style>
+      /*github.com style (c) Vasily Polovnyov <vast@whiteants.net>*/
+      pre code {
+        display: block; padding: 0.5em;
+        color: #333;
+        background: #f8f8ff
+      }
+      pre .comment,
+      pre .template_comment,
+      pre .diff .header,
+      pre .javadoc {
+        color: #998;
+        font-style: italic
+      }
+      pre .keyword,
+      pre .css .rule .keyword,
+      pre .winutils,
+      pre .javascript .title,
+      pre .nginx .title,
+      pre .subst,
+      pre .request,
+      pre .status {
+        color: #333;
+        font-weight: bold
+      }
+      pre .number,
+      pre .hexcolor,
+      pre .ruby .constant {
+        color: #099;
+      }
+      pre .string,
+      pre .tag .value,
+      pre .phpdoc,
+      pre .tex .formula {
+        color: #d14
+      }
+      pre .title,
+      pre .id {
+        color: #900;
+        font-weight: bold
+      }
+      pre .javascript .title,
+      pre .lisp .title,
+      pre .clojure .title,
+      pre .subst {
+        font-weight: normal
+      }
+      pre .class .title,
+      pre .haskell .type,
+      pre .vhdl .literal,
+      pre .tex .command {
+        color: #458;
+        font-weight: bold
+      }
+      pre .tag,
+      pre .tag .title,
+      pre .rules .property,
+      pre .django .tag .keyword {
+        color: #000080;
+        font-weight: normal
+      }
+      pre .attribute,
+      pre .variable,
+      pre .lisp .body {
+        color: #008080
+      }
+      pre .regexp {
+        color: #009926
+      }
+      pre .class {
+        color: #458;
+        font-weight: bold
+      }
+      pre .symbol,
+      pre .ruby .symbol .string,
+      pre .lisp .keyword,
+      pre .tex .special,
+      pre .prompt {
+        color: #990073
+      }
+      pre .built_in,
+      pre .lisp .title,
+      pre .clojure .built_in {
+        color: #0086b3
+      }
+      pre .preprocessor,
+      pre .pi,
+      pre .doctype,
+      pre .shebang,
+      pre .cdata {
+        color: #999;
+        font-weight: bold
+      }
+      pre .deletion {
+        background: #fdd
+      }
+      pre .addition {
+        background: #dfd
+      }
+      pre .diff .change {
+        background: #0086b3
+      }
+      pre .chunk {
+        color: #aaa
+      }
+    </style>
+  </head>
+  <body>  
+    <h1 id="extensions">Extensions</h1>
+<p>Extensions allow users to customize their app experience without depending on the app&#39;s core developer. For example, suppose many users demanded an &quot;export to PDF&quot; feature in a notes app built on top of Standard File. The developer of the notes app does not wish to implement this feature, as it would make the codebase larger, more complex, and less sustainabile, and would rather keep just the essentials.</p>
+<p>Instead, an outside developer can decide to build a &quot;Export to PDF&quot; extension. Any app that supports extensions can now support Export to PDF functionality without needing to build it themselves, or even understand how it works.</p>
+<h2 id="specification">Specification</h2>
+<p>The core interface of an extension is a primary URL that supports GET requests. An extension developer can implement an extension system however they choose, as long as the end result is a URL the end user can plug in to applications.</p>
+<p>When a user enters the URL into the client application, the client will perform a GET request to that URL. The server will return actions available to the extension.</p>
+<p><strong>Request:</strong></p>
+<p><code>GET extension_url</code>
+Parameters: </p>
+<ul>
+<li>item_uuid (optional)</li>
+<li>content_type (required if item_uuid supplied, otherwise optional. The content_type of the item. The server can use this to determine if this content type is supported by this extension.)</li>
+</ul>
+<p><strong>Response:</strong></p>
+<p>The extension&#39;s name, supported content types, and:</p>
+<ul>
+<li>If content_type or item_uuid was provided in the params, then the response will be an array of Actions that apply to this item or this item type (nested under &quot;actions&quot;).</li>
+</ul>
+<h3 id="the-action-model">The <code>Action</code> Model</h3>
+<p>An action model has the following fields:</p>
+<ul>
+<li><strong>label</strong>: what should be displayed to the user.</li>
+<li><strong>url</strong>: the URL the app should perform</li>
+<li><strong>type</strong>: the type of the URL action. This could be one of [&quot;get&quot;, &quot;post&quot;, &quot;show&quot;, &quot;delete&quot;]. <code>show</code> opens the URL in a browser. The rest are API requests.</li>
+<li><p><strong>structures</strong>: an array of Structure metadata that describes what is required to be sent with the request. For <code>content</code> properties, the requested fields should be a key path.</p>
+<pre><code>[
+       <span class="hljs-string">"structure"</span> : <span class="hljs-string">"Note"</span>,
+       <span class="hljs-string">"fields"</span>: [
+           {
+               "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"uuid"</span></span>,
+               "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+               "<span class="hljs-attribute">mod_type</span>" : <span class="hljs-value">nil
+           </span>},
+           {
+               "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"created_at"</span></span>,
+               "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+               "<span class="hljs-attribute">mod_type</span>" : <span class="hljs-value">nil
+           </span>},
+            {
+               "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.title"</span></span>,
+               "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+               "<span class="hljs-attribute">mod_type</span>" : <span class="hljs-value">replace
+           </span>},
+       ]
+]
+</code></pre></li>
+</ul>
+<p>Upon completion of this action, apps should either merge or append the values of keys present in this array. In this example, after the app performs this action and receives a response, it should merge or append the values of the response for these keys with the local model, and then sync data with user&#39;s server.</p>
+<p>The app should display this list of actions and perform the respective URL of that action upon selection. </p>
+<h2 id="example">Example</h2>
+<p>Let&#39;s try an example with a &quot;Calculate Average&quot; extension that calculates the mean of numbers in a Note structure.</p>
+<p>As an extension developer, I set up a simple server that can generate unique URLS and also respond to them. I also put up a small landing page:</p>
+<hr>
+<p><em>Welcome to my extension! Use this URL in your app to install this extension</em></p>
+<p><strong><a href="https://myextension.me/note/calcaverage">https://myextension.me/note/calcaverage</a></strong></p>
+<hr>
+<p>Now, as a user, I&#39;ll copy that URL and paste it into the main client.</p>
+<p>The client performs a GET request to <a href="https://myextension.me/calcaverage">https://myextension.me/calcaverage</a> without any paramters and receives a response:</p>
+<pre><code>{
+    "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"Average Calculator"</span></span>,
+    "<span class="hljs-attribute">supported_types</span>" : <span class="hljs-value">[ <span class="hljs-string">"Note"</span> ]</span>,
+    "<span class="hljs-attribute">actions</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Calculate Average"</span></span>,
+            "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://myextension.me/calcaverage"</span></span>,
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"post"</span></span>,
+            "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">[
+                {    
+                     "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"Note"</span></span>,
+                     "<span class="hljs-attribute">fields</span>": <span class="hljs-value">[
+                          {
+                             "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.text"</span></span>,
+                             "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+                             "<span class="hljs-attribute">mod_type</span>" : <span class="hljs-value"><span class="hljs-string">"insert"</span>
+                         </span>}
+                     ]
+                 </span>}
+            }
+        ]
+    ]
+</span>}</span>
+</code></pre><p>The client now displays this action.</p>
+<p>The user clicks on &quot;Calculate Average&quot;.</p>
+<p>The client will perform a POST request:</p>
+<p>URL: <code>https://myextension.me/calcaverage</code></p>
+<p>Parameters:</p>
+<pre><code> {
+     "<span class="hljs-attribute">item</span>" : <span class="hljs-value">{
+         "<span class="hljs-attribute">content.text</span>" : <span class="hljs-value"><span class="hljs-string">"1, 3, 5, 7, 11, 13, 17, 19, 23, 29"</span>
+     </span>}
+ </span>}
+</code></pre><p>Client receives response JSON:</p>
+<pre><code>{
+    "<span class="hljs-attribute">item</span>" : <span class="hljs-value">{
+        "<span class="hljs-attribute">content.text</span>" : <span class="hljs-value"><span class="hljs-string">"The average is: 12.8"</span>
+    </span>}
+</span>}
+</code></pre><p>Since the original action mod type was &quot;insert&quot;, we&#39;ll insert this result to this Note&#39;s content.text field and sync.</p>
+<h2 id="file-attachment-example">File Attachment Example</h2>
+<p>Let&#39;s do another example where we have a FileAttachment extension.</p>
+<p>As an extention developer, I&#39;ll build a website that can handle user registration and sign in. When a user registers, I&#39;ll provider the user with a unique, secret URL that identifies their account:</p>
+<blockquote>
+<p><a href="https://fileattacher.me/extension/jfd9r3ajfht478f">https://fileattacher.me/extension/jfd9r3ajfht478f</a></p>
+</blockquote>
+<p>Next, as a user, I&#39;ll enter this URL into the main app.</p>
+<p>The client app performs a GET request to <a href="https://fileattacher.me/extension/jfd9r3ajfht478f">https://fileattacher.me/extension/jfd9r3ajfht478f</a> without any paramters and receives a response:</p>
+<pre><code>{
+    "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"File Attacher"</span></span>,
+    "<span class="hljs-attribute">supported_types</span>" : <span class="hljs-value">[ <span class="hljs-string">"Note"</span> ]
+</span>}
+</code></pre><p>Because this extension supports the Note type, the app will display this extension in the extensions section of any Note item. And because no Actions are returned with this response, this is an Item specific extension.</p>
+<p>Next, as a user, I select a note. I click on &quot;Extensions&quot; in the menu bar. The client now performs a GET request to the extension&#39;s URL in order to retreive available actions for this item.</p>
+<p><strong>Request:</strong></p>
+<p><code>GET https://fileattacher.me/extension/jfd9r3ajfht478f</code></p>
+<p>Parameters: </p>
+<pre><code>{<span class="hljs-string">"item_uuid"</span> : <span class="hljs-string">"439ecf9b-788f-470f-9559-65ac5179981a"</span>, <span class="hljs-string">"content_type"</span> : <span class="hljs-string">"Note}</span>
+</code></pre><p><strong>Response:</strong></p>
+<pre><code>{
+    "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"File Attacher"</span></span>,
+    "<span class="hljs-attribute">supported_types</span>" : <span class="hljs-value">[ <span class="hljs-string">"Note"</span> ]</span>,
+    "<span class="hljs-attribute">actions</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Attach new file"</span></span>,
+            "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://fileattacher.me/extension/jfd9r3ajfht478f/439ecf9b-788f-470f-9559-65ac5179981a/attach"</span></span>,
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"show"</span></span>,
+            "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">nil
+        </span>}
+    ]
+</span>}
+</code></pre><p>The client now displays this action.</p>
+<p>When the user selects &quot;Attach new file&quot;, the client app notices the <code>type</code> field is <code>show</code>, so it will simply open that URL with the user&#39;s default browser. The browser now loads the extension&#39;s website via the unique URL and shows an &quot;Add attachment&quot; button. The user proceeds to add an attachment titled &quot;Expenses(1).pdf&quot;, and closes the window.</p>
+<p>The user re-opens the extension menu in the main app. The client performs the same GET request to the extension&#39;s URL with the item&#39;s UUID and content_type to reload the available actions, and receives the following response:</p>
+<pre><code>{
+    "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"File Attacher"</span></span>,
+    "<span class="hljs-attribute">supported_types</span>" : <span class="hljs-value">[ <span class="hljs-string">"Note"</span> ]</span>,
+    "<span class="hljs-attribute">actions</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Attach new file"</span></span>,
+            "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://fileattacher.me/extension/jfd9r3ajfht478f/439ecf9b-788f-470f-9559-65ac5179981a/attach"</span></span>,
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"show"</span></span>,
+            "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">nil
+        </span>},
+        {
+            "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Download Expenses(1).pdf"</span></span>,
+            "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://fileattacher.me/extension/jfd9r3ajfht478f/439ecf9b-788f-470f-9559-65ac5179981a/download/i39fe9fj4d"</span></span>,
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"show"</span></span>,
+            "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">nil
+        </span>}
+    ]
+</span>}
+</code></pre><p>The client app now displays both these actions, and the user can download the attachment they uploaded via the second action.</p>
+<h2 id="third-party-sync-example">Third Party Sync Example</h2>
+<p>Let&#39;s say you want to sync all your notes to a third party cloud provider, Dropsquare.</p>
+<p>First you&#39;d visit dropsquare.com, login, and press &quot;Generate Secret Standard File Extention URL&quot;. You receive this result:</p>
+<blockquote>
+<p><a href="https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj">https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj</a></p>
+</blockquote>
+<p>Next, you&#39;d open your main app and click &quot;Add new extension&quot;, and you&#39;d type in that URL.</p>
+<p>The client app now performs a GET request to that URL, and receives this response:</p>
+<pre><code>{
+    "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"Dropsquare Sync"</span></span>,
+    "<span class="hljs-attribute">supported_types</span>" : <span class="hljs-value">[ <span class="hljs-string">"Note"</span> ]</span>,
+    "<span class="hljs-attribute">actions</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Auto-Push Changes"</span></span>,
+            "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj/push"</span></span>,
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"watch:post:30"</span></span>,
+            "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">[
+                {
+                    "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"Note"</span></span>,
+                     "<span class="hljs-attribute">fields</span>": <span class="hljs-value">[
+                          {
+                             "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"uuid"</span></span>,
+                             "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+                         },
+                          {
+                             "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.title"</span></span>,
+                             "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+                         },
+                          {
+                             "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.text"</span></span>,
+                             "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+                         }
+                     ]
+                </span>}
+            ]
+        </span>}
+    ]
+</span>}
+</code></pre><p>The client notices the first action has a type <code>watch:post:30</code>.</p>
+<ul>
+<li><p>the <code>watch</code> means the client should watch the fields provided in the structures array for changes.</p>
+</li>
+<li><p>the <code>post</code> means whenever a change is made to one of those fields, the client should <code>post</code> to the URL in that action.</p>
+</li>
+<li><p>the <code>30</code> is the watch interval, or how often this event should be executed, at minimum. This means if the user changes the title of the note once, if another change is made within 30 seconds, the sync is queued and not executed until 30 seconds have passed from the previous request.</p>
+</li>
+</ul>
+<p>The user changes the title of a note.</p>
+<p>The client observes the change and notifies the extension by making a POST request to <code>https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj/push</code> with the following parameters:</p>
+<pre><code>{
+    "<span class="hljs-attribute">items</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">content_type</span>" : <span class="hljs-value"><span class="hljs-string">"Note"</span></span>,
+            "<span class="hljs-attribute">uuid</span>" : <span class="hljs-value"><span class="hljs-string">"055fb8e0-cbef-4dfa-aa09-b7fea8d3555b"</span></span>,
+            "<span class="hljs-attribute">content</span>" : <span class="hljs-value">{
+                "<span class="hljs-attribute">title</span>" : <span class="hljs-value"><span class="hljs-string">"Hello World."</span></span>,
+                "<span class="hljs-attribute">text</span>" : <span class="hljs-value"><span class="hljs-string">"It's me, 42."</span>
+            </span>}
+        </span>}
+    ]
+</span>}
+</code></pre><p>Dropsquare receives those items and saves them, and responds with:</p>
+<pre><code>{
+    "<span class="hljs-attribute">response_id</span>" : <span class="hljs-value"><span class="hljs-string">"e238y492c3849t0"</span>
+</span>}
+</code></pre><p>The client stores the response id and sends it to any future requests to the same URL as <code>previous_response_id</code>.</p>
+<p>The above example handles auto-saving changes. What if we wanted to auto-pull changes from Dropsquare? Our main data repository in this app is still the Standard File server. We just want to use Dropsquare as a backup data store for peace of mind.</p>
+<p>The below scenario wouldn&#39;t make sense to use in this kind of application, but we delineate it below to demonstrate how it would be performed nonetheless.</p>
+<p>We do a GET request to the extensions URL, and notice a new action:</p>
+<pre><code>{
+    "<span class="hljs-attribute">label</span>" : <span class="hljs-value"><span class="hljs-string">"Auto-Pull Changes"</span></span>,
+    "<span class="hljs-attribute">url</span>" : <span class="hljs-value"><span class="hljs-string">"https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj/pull"</span></span>,
+    "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"poll:get:10"</span></span>,
+    "<span class="hljs-attribute">structures</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-string">"Note"</span></span>,
+             "<span class="hljs-attribute">fields</span>": <span class="hljs-value">[
+                  {
+                     "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"uuid"</span></span>,
+                     "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+                     "<span class="hljs-attribute">direction</span>" : <span class="hljs-value"><span class="hljs-string">"in"</span>
+                 </span>},
+                  {
+                     "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.title"</span></span>,
+                     "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+                     "<span class="hljs-attribute">direction</span>" : <span class="hljs-value"><span class="hljs-string">"in"</span>
+                 </span>},
+                  {
+                     "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"content.text"</span></span>,
+                     "<span class="hljs-attribute">modifies</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+                     "<span class="hljs-attribute">direction</span>" : <span class="hljs-value"><span class="hljs-string">"in"</span>
+                 </span>}
+             ]
+        </span>}
+    ]
+</span>}
+</code></pre><p>This action is a <code>poll</code> action. This means it executes something every x seconds. In this case, it will execute a GET request to <code>https://dropsquare.com/ext/ifj93jfnbuf72scm4865u29fj/pull</code> every 10 seconds. </p>
+<p>The client looks at the structures, and notices that all the fields have a <code>direction</code> of &quot;in&quot;, which means these paramters come in from the request, and are not going out from the app.</p>
+<p>The server will respond with:</p>
+<pre><code>{
+    "<span class="hljs-attribute">response_id</span>" : <span class="hljs-value"><span class="hljs-string">"5ufj39fdj3"</span></span>,
+    "<span class="hljs-attribute">items</span>" : <span class="hljs-value">[
+        {
+            "<span class="hljs-attribute">content_type</span>" : <span class="hljs-value"><span class="hljs-string">"Note"</span></span>,
+            "<span class="hljs-attribute">uuid</span>" : <span class="hljs-value"><span class="hljs-string">"..."</span></span>,
+            "<span class="hljs-attribute">content</span>" : <span class="hljs-value">{
+                "<span class="hljs-attribute">title</span>" : <span class="hljs-value"><span class="hljs-string">"Expense Report"</span></span>,
+                "<span class="hljs-attribute">text</span>" : <span class="hljs-value"><span class="hljs-string">"Spent lots of money today."</span>
+            </span>}
+        </span>}
+    ]
+</span>}
+</code></pre><p>The client will merge this item with local items. It will also store the <code>response_id</code> and send it with subsequent requests to the URL. The server can use this ID as a sync marker, to determine which changes should be pushed.</p>
+
+  </body>
+</html>
