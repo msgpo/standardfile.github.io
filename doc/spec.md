@@ -432,7 +432,7 @@ For every item:
 
 Check the first 3 characters of the `content` string. If it is equal to "001", `content` is encrypted, and should be decrypted:
 
-1.  Decrypt `enc_item_key` with AES-CBC-256:base64(enc_item_key, mk)` to get hex string `item_key`.
+1.  Decrypt `enc_item_key` with `AES-CBC-256:base64(enc_item_key, mk)` to get hex string `item_key`.
 2.  Split `item_key` in half; set encryption key `ek = first half` and authentication key `ak = second half`.
 3.  Verify authenticity of message by computing `auth_hash = HMAC-SHA256:hex(encrypted-content, ak)`. If this value matches the `auth_hash` value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.
 4.  Decrypt content using `ek`.
