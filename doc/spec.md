@@ -93,8 +93,7 @@ A user model has the following properties:
 | --- | --- | --- |
 | email | Integer | The email of the user. |
 | password | String | The password for this user. _Note that passwords must be manipulated before being sent to the server. See here._ |
-| username (_optional_) | String | A unique username used for sharing items. For servers that manage multiple Users, the username serves as a way to namespace presentations. |
-| pw_function | String | The key derivation function (KDF) for this user. See Encryption for more. |
+| pw_func | String | The key derivation function (KDF) for this user. See Encryption for more. |
 | pw_alg | String | The algorithm to use for the key derivation function. See Encryption for more. |
 | pw_cost | String | The number of iterations to use for the KDF. See Encryption for more. |
 | pw_key_size | Integer | The output key size of the KDF. See Encryption for more. |
@@ -106,11 +105,10 @@ Item models have the following properties:
 
 | name | type | description |
 | --- | --- | --- |
-| content | Text (Base64) | The JSON string encoded structure of the note, encrypted (with some exceptions. See Sharing for details). |
+| content | Text (Base64) | The JSON string encoded structure of the note, encrypted. |
 | content_type | String | The type of the structure contained in the `content` field. |
 | enc_item_key | String (Base64) | The locally encrypted encryption key for this item. |
 | auth_hash | String (Hex) | The HMAC authentication hash for the encrypted content of this item. |
-| presentation_name | String | The name of this presentation, if applicable. (See Sharing for details). |
 | deleted | Bool | Whether the model has been deleted. |
 | created_at | Date | The date this item was created. |
 | updated_at | Date | The date this item was modified. |
@@ -199,7 +197,7 @@ Responses
 200
 
 ```
-{"jwt" : "..."}
+{"token" : "..."}
 ```
 
 5xx
@@ -217,28 +215,7 @@ Responses
 200
 
 ```
-{"pw_function" : "...", "pw_alg" : "...", "pw_cost" : "...", "pw_key_size" : "...", "pw_salt" : "..."}
-```
-
-5xx
-
-```
-{"errors" : []}
-```
-
-<h1><a id='api-users'></a>Users</h1>
-
-#### GET users/me
-**Returns the current user as well as all the user's items.**
-
-*Params:*
-
-Responses
-
-200
-
-```
-{"email" : "...", "items" : []}
+{"pw_func" : "...", "pw_alg" : "...", "pw_cost" : "...", "pw_key_size" : "...", "pw_salt" : "..."}
 ```
 
 5xx
@@ -257,13 +234,14 @@ Responses
 
 - `items`: An array of items
 - `sync_token`: the sync token returned from the previous sync call. Leave empty if first sync.
+- `limit`: (optional) the number of results to return. `cursor_token` is returned if more results are available.
 
 Responses
 
 200
 
 ```
-{"retrieved_items" : [], "saved_items" : [], "sync_token" : ""}
+{"retrieved_items" : [], "saved_items" : [], "unsaved_items" : [], "sync_token" : ""}
 ```
 
 5xx
@@ -279,18 +257,15 @@ Responses
 - Clients: set `deleted` equal to `true` and sync. When receiving an item that is `deleted`, remove it from the local database immediately.
 - Servers: if syncing an item that is `deleted`, clear out its `content`, `enc_item_key`, and `auth_hash` fields, set `deleted` to true, and save.
 
-**Presentations:**
-
-For sharing an item, the client can propose a `presentation_name` manually, however, the client can't be sure a conflict exists. Instead, the client should set `presentation_name` to
-"\_auto\_". When a server detects a presentation name set to "\_auto\_", it should create a unique presentation name based on the contents of the item.
-
 **Sync completion:**
 
 Upon sync completion, the client should handle each response item as follows:
 
 - `retrieved_items`: these items are new or have been modified since last sync and should be merged or created locally.
 - `saved_items`: saved items are dirty items that were sent to the sync request. These items should not be merged in their entirety upon completion. Instead, only their metadata should be merged. For example, if at Point A the client syncs a Note item that a user is still typing, and at Point B the sync completes, the user could have typed more content in between A and B. Thus, if you merge all content, the user's progress in between A and B will be lost. However, if you merge just the metadata, then this issue does not occur.
+- `unsaved_items`: returned if an error occurred saving those items. The only reason this should happen is in the improbable case of a UUID conflict.
 - `sync_token`: this token should be saved when it is received and sent to subsequent sync requests. This token should also be persisted locally between app sessions. For first time sync, no token should be provided.
+- 'cursor_token`': returned if original request had a `limit`. Send this token back to the server to retrieve next page of results.
 
 <h1><a id='import-export'></a>Import/Export</h1>
 
@@ -304,7 +279,6 @@ The export file is a JSON file of all the user's items, unencrypted.
     {
       "uuid": "3162fe3a-1b5b-4cf5-b88a-afcb9996b23a",
       "content_type": "Note",
-      "presentation_name": null,
       "content": {
         "references": [
           {
@@ -325,7 +299,6 @@ The export file is a JSON file of all the user's items, unencrypted.
     {
       "uuid": "023112fe-9066-481e-8a63-f15f27d3f904",
       "content_type": "Tag",
-      "presentation_name": "essays",
       "content": {
         "references": [
           {
@@ -354,7 +327,7 @@ The export file is a JSON file of all the user's items, unencrypted.
 1.  User chooses "Export" option on client A, which is paired with server A.
 2.  Client produces JSON file with all items unencrypted.
 3.  User uploads JSON file with client B paired with Server B.
-4.  Client B iterates over items and encrypts the content of each of them locally. (Sharing exceptions apply, see Sharing.)
+4.  Client B iterates over items and encrypts the content of each of them locally.
 5.  Client B sends items (with encrypted item content) data to server B as normal POST request to `/items`.
 
 <h1><a id='encryption'></a>Encryption</h1>
@@ -375,7 +348,7 @@ Note: client-server connections must be made securely through SSL/TLS.
 
 | name | details |
 | --- | --- |
-| pw_function | The key derivation function (KDF) to use. The current version of SN should only use PBKDF2, but this list can expand to use bcrypt, scrypt, or Argon2 in the future. |
+| pw_func | The key derivation function (KDF) to use. The current version of SN should only use PBKDF2, but this list can expand to use bcrypt, scrypt, or Argon2 in the future. |
 | pw_alg | The hashing algorithm of the KDF. Clients should default to SHA512, but this can be changed depending on client cirumstances. |
 | pw_cost | The number of iterations to be used by the KDF. On native platforms, this should be around 60,000\. However note that non-native clients (web clients not using WebCrypto) will not be able to handle any more than 5,000 iterations. |
 | pw_key_size | The KDF output key size. This should match up with the output length of pw_alg. If you're using SHA512, then this value should be 512. |
@@ -446,7 +419,7 @@ As general rules:
 2. Keys are stored as Hex.
 3. Keys that are encrypted (using AES) are stored as base64.
 
-For every item, if item is not public:
+For every item:
 
 1.  Generate a random 512 bit key `item_key` (in hex format).
 2.  Split `item_key` in half; set encryption key `ek = first half` and authentication key `ak = second half`.
@@ -454,11 +427,6 @@ For every item, if item is not public:
 4.  Compute `auth_hash = HMAC-SHA256:hex(base64-encrypted-content-string, ak)`.
 5.  Encrypt `item_key` with user’s master key `mk`: `enc_item_key = AES-CBC-256.base64(item_key, mk)`.
 6.  Send `content`, `enc_item_key`, and `auth_hash` to the server.
-
-**If item is public or belongs to public item:**
-
-1.  Set `enc_item_key` and `auth_hash` to null.
-2.  Send `content` as a base64 encoded JSON string with the literal string "000" prepended to indicating it is not encrypted to the server.
 
 **Decryption:**
 
@@ -474,17 +442,6 @@ Check the first 3 characters of the `content` string. If it is equal to "001", `
 For every received item:
 
 1.  (Optional but recommended) Encrypt `content` using server known key and store. Decrypt before sending back to client.
-
-<h1><a id='sharing'></a>Sharing/Publishing</h1>
-
-When an item is shared, it is accessible by the public. To share an item, you set a value for `presentation_name` on the item.
-
-When presenting, the client must remove local encryption from the item and all other referenced items the client deems related.
-
-When un-presenting an item, the client must encrypt the item and all other referenced items the client deems related.
-
-When the server returns an item to the client, it sends back an optional computed value for `presentation_url`. This URL is decided by the server. The server should also know how to respond to this URL.
-
 
 # Next Steps
 
