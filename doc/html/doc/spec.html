@@ -566,7 +566,7 @@ mk = key.<span class="hljs-function"><span class="hljs-title">substring</span><s
 <p><strong>Decryption:</strong></p>
 <p>Check the first 3 characters of the <code>content</code> string. If it is equal to &quot;001&quot;, <code>content</code> is encrypted, and should be decrypted:</p>
 <ol>
-<li>Decrypt <code>enc_item_key</code> with AES-CBC-256:base64(enc_item_key, mk)<code>to get hex string</code>item_key`.</li>
+<li>Decrypt <code>enc_item_key</code> with <code>AES-CBC-256:base64(enc_item_key, mk)</code> to get hex string <code>item_key</code>.</li>
 <li>Split <code>item_key</code> in half; set encryption key <code>ek = first half</code> and authentication key <code>ak = second half</code>.</li>
 <li>Verify authenticity of message by computing <code>auth_hash = HMAC-SHA256:hex(encrypted-content, ak)</code>. If this value matches the <code>auth_hash</code> value returned by the server for this item, then proceed. Otherwise, the encrypted content of this item has been tampered with.</li>
 <li>Decrypt content using <code>ek</code>.</li>
