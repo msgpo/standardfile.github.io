@@ -445,7 +445,9 @@ For every received item:
 
 # Next Steps
 
-Check out the [client development guide](https://github.com/standardnotes/standardnotes.github.io/blob/master/doc/client-dev-guide.md) for a practical guide to developing an application on top of Standard File.
+Check out the [client development guide](https://github.com/standardnotes/doc/blob/master/Client%20Development%20Guide.md) for a practical guide to developing an application on top of Standard File.
+
+If you're a developer, see [Developer Resources](https://standardnotes.org/developers).
 
 Join the [Slack group](https://slackin-ekhdyygaer.now.sh/) to discuss implementation details and ask any questions you may have.
 
