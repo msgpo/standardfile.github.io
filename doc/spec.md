@@ -94,7 +94,7 @@ A user model has the following properties:
 | name | type | description |
 | --- | --- | --- |
 | email | String | The email of the user. |
-| password | String | The password for this user. _Note that passwords must be manipulated before being sent to the server. See here._ |
+| password | String | The password for this user. _Note that passwords must be manipulated before being sent to the server._ |
 | pw_func | String | The key derivation function (KDF) for this user. See Encryption for more. |
 | pw_alg | String | The algorithm to use for the key derivation function. See Encryption for more. |
 | pw_cost | String | The number of iterations to use for the KDF. See Encryption for more. |
