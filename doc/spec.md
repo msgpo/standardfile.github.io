@@ -45,7 +45,7 @@ Today, [a robust notes system](https://standardnotes.org) has already been built
 
 **Version 0.0.2**
 
-_(For the 0.0.1 specification, see [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md))_
+_(For the 0.0.1 specification, see [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md))_
 
 While most protocol specifications are hard to read and unnecessarily complex, Standard File aims to be a simple system that any developer can understand and implement.
 
@@ -481,7 +481,7 @@ Given a `string_to_encrypt`, an `encryption_key`, and an `auth_key`:
 
 Check the first 3 characters of the `content` string. This will be the encryption version.
 
-- If it is equal to "001", which is a legacy scheme, decrypt according to the 001 instructions found [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md).
+- If it is equal to "001", which is a legacy scheme, decrypt according to the 001 instructions found [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md).
 
 - If it is equal to "002", which is the current scheme, decrypt as follows:
 

@@ -142,7 +142,7 @@
 <p>Today, <a href="https://standardnotes.org">a robust notes system</a> has already been built on top of Standard File.</p>
 <h1 id="protocol-specification">Protocol Specification</h1>
 <p><strong>Version 0.0.2</strong></p>
-<p><em>(For the 0.0.1 specification, see <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md">here</a>)</em></p>
+<p><em>(For the 0.0.1 specification, see <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md">here</a>)</em></p>
 <p>While most protocol specifications are hard to read and unnecessarily complex, Standard File aims to be a simple system that any developer can understand and implement.</p>
 <h2><a id='implementations'></a>Implementations</h2>
 
@@ -587,7 +587,7 @@ data as to ascertain its authenticity and lack of tampering.</p>
 <p><strong>Decryption:</strong></p>
 <p>Check the first 3 characters of the <code>content</code> string. This will be the encryption version.</p>
 <ul>
-<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md">here</a>.</p>
+<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md">here</a>.</p>
 </li>
 <li><p>If it is equal to &quot;002&quot;, which is the current scheme, decrypt as follows:</p>
 </li>
