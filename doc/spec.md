@@ -93,7 +93,7 @@ A user model has the following properties:
 
 | name | type | description |
 | --- | --- | --- |
-| email | Integer | The email of the user. |
+| email | String | The email of the user. |
 | password | String | The password for this user. _Note that passwords must be manipulated before being sent to the server. See here._ |
 | pw_func | String | The key derivation function (KDF) for this user. See Encryption for more. |
 | pw_alg | String | The algorithm to use for the key derivation function. See Encryption for more. |
@@ -266,7 +266,7 @@ Upon sync completion, the client should handle each response item as follows:
 - `saved_items`: saved items are dirty items that were sent to the sync request. These items should not be merged in their entirety upon completion. Instead, only their metadata should be merged. For example, if at Point A the client syncs a Note item that a user is still typing, and at Point B the sync completes, the user could have typed more content in between A and B. Thus, if you merge all content, the user's progress in between A and B will be lost. However, if you merge just the metadata, then this issue does not occur.
 - `unsaved_items`: returned if an error occurred saving those items. The only reason this should happen is in the improbable case of a UUID conflict.
 - `sync_token`: this token should be saved when it is received and sent to subsequent sync requests. This token should also be persisted locally between app sessions. For first time sync, no token should be provided.
-- 'cursor_token`': returned if original request had a `limit`. Send this token back to the server to retrieve next page of results.
+- `cursor_token`: returned if original request had a `limit`. Send this token back to the server to retrieve next page of results.
 
 <h1><a id='import-export'></a>Import/Export</h1>
 
