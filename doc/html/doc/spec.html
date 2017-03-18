@@ -128,8 +128,7 @@
 
 <p>To get started with a Standard File account, find <a href="https://standardnotes.org">apps</a> that support the Standard File format.</p>
 <p>These apps will ask you for a Standard File server location. You can use any of these free servers:</p>
-<p><a href="https://n1.standardfile.org">https://n1.standardfile.org</a></p>
-<p><a href="https://n3.standardfile.org.uk">https://n3.standardfile.org.uk</a> (in development)</p>
+<p><a href="https://n3.standardnotes.org">https://n3.standardnotes.org</a></p>
 <p>Simply register for a Standard File account using one of the available apps.</p>
 <p><em>Note: because your data is encrypted before being sent to the server, it is not necessarily important to &quot;trust&quot; these servers. This means you can choose any server and rest assured that your data is secure.</em></p>
 <p>If you&#39;re tech savvy, you can even <a href="https://github.com/standardfile/ruby-server/wiki/Deploying-a-private-Standard-File-server-with-Amazon-EC2-and-Nginx">host your own Standard File server</a>.</p>
@@ -143,6 +142,7 @@
 <p>Today, <a href="https://standardnotes.org">a robust notes system</a> has already been built on top of Standard File.</p>
 <h1 id="protocol-specification">Protocol Specification</h1>
 <p><strong>Version 0.0.2</strong></p>
+<p><em>(For the 0.0.1 specification, see <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md">here</a>)</em></p>
 <p>While most protocol specifications are hard to read and unnecessarily complex, Standard File aims to be a simple system that any developer can understand and implement.</p>
 <h2><a id='implementations'></a>Implementations</h2>
 
@@ -198,7 +198,7 @@
 <tbody>
 <tr>
 <td>email</td>
-<td>Integer</td>
+<td>String</td>
 <td>The email of the user.</td>
 </tr>
 <tr>
@@ -374,7 +374,7 @@
 <li><code>saved_items</code>: saved items are dirty items that were sent to the sync request. These items should not be merged in their entirety upon completion. Instead, only their metadata should be merged. For example, if at Point A the client syncs a Note item that a user is still typing, and at Point B the sync completes, the user could have typed more content in between A and B. Thus, if you merge all content, the user&#39;s progress in between A and B will be lost. However, if you merge just the metadata, then this issue does not occur.</li>
 <li><code>unsaved_items</code>: returned if an error occurred saving those items. The only reason this should happen is in the improbable case of a UUID conflict.</li>
 <li><code>sync_token</code>: this token should be saved when it is received and sent to subsequent sync requests. This token should also be persisted locally between app sessions. For first time sync, no token should be provided.</li>
-<li>&#39;cursor_token<code>&#39;: returned if original request had a</code>limit`. Send this token back to the server to retrieve next page of results.</li>
+<li><code>cursor_token</code>: returned if original request had a <code>limit</code>. Send this token back to the server to retrieve next page of results.</li>
 </ul>
 <h1><a id='import-export'></a>Import/Export</h1>
 
@@ -562,12 +562,6 @@ data as to ascertain its authenticity and lack of tampering.</p>
 <p><strong>Encryption:</strong></p>
 <p><em>Encryption version: 002.</em> (You&#39;ll use this version string as indicated below.)</p>
 <p>Note that when encrypting/decrypting data, keys should be converted to the proper format your platform function supports. It&#39;s best to convert keys to binary data before running through any encryption/hashing algorithm.</p>
-<p>As general rules:</p>
-<ol>
-<li>Anything <em>encrypted</em> (using AES) is stored as base64.</li>
-<li>Keys are stored as Hex.</li>
-<li>Keys that are encrypted (using AES) are stored as base64.</li>
-</ol>
 <p>For every item:</p>
 <ol>
 <li>Generate a random 512 bit key <code>item_key</code> (in hex format).</li>
@@ -593,7 +587,7 @@ data as to ascertain its authenticity and lack of tampering.</p>
 <p><strong>Decryption:</strong></p>
 <p>Check the first 3 characters of the <code>content</code> string. This will be the encryption version.</p>
 <ul>
-<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="/001">here</a>.</p>
+<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md">here</a>.</p>
 </li>
 <li><p>If it is equal to &quot;002&quot;, which is the current scheme, decrypt as follows:</p>
 </li>

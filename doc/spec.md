@@ -19,9 +19,7 @@ To get started with a Standard File account, find [apps](https://standardnotes.o
 
 These apps will ask you for a Standard File server location. You can use any of these free servers:
 
-https://n1.standardfile.org
-
-https://n3.standardfile.org.uk (in development)
+https://n3.standardnotes.org
 
 Simply register for a Standard File account using one of the available apps.
 
@@ -46,6 +44,8 @@ Today, [a robust notes system](https://standardnotes.org) has already been built
 # Protocol Specification
 
 **Version 0.0.2**
+
+_(For the 0.0.1 specification, see [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md))_
 
 While most protocol specifications are hard to read and unnecessarily complex, Standard File aims to be a simple system that any developer can understand and implement.
 
@@ -445,12 +445,6 @@ An item is encrypted using a random key generated for each item.
 
 Note that when encrypting/decrypting data, keys should be converted to the proper format your platform function supports. It's best to convert keys to binary data before running through any encryption/hashing algorithm.
 
-As general rules:
-
-1. Anything *encrypted* (using AES) is stored as base64.
-2. Keys are stored as Hex.
-3. Keys that are encrypted (using AES) are stored as base64.
-
 For every item:
 
 1.  Generate a random 512 bit key `item_key` (in hex format).
@@ -487,7 +481,7 @@ Given a `string_to_encrypt`, an `encryption_key`, and an `auth_key`:
 
 Check the first 3 characters of the `content` string. This will be the encryption version.
 
-- If it is equal to "001", which is a legacy scheme, decrypt according to the 001 instructions found [here](/001).
+- If it is equal to "001", which is a legacy scheme, decrypt according to the 001 instructions found [here](https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-0.0.1.md).
 
 - If it is equal to "002", which is the current scheme, decrypt as follows:
 
