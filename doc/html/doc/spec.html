@@ -114,7 +114,7 @@
   <body>  
     <h1><a id='intro'></a> Intro </h1>
 
-<p>Standard File is a sync and encryption framework for web and native applications. It allows developers to focus on building great user-facing applications, and leaves the syncing, servers, and end-to-end encryption to our framework.</p>
+<p>Standard File is a sync and encryption library for web and native applications. It allows developers to focus on building great user-facing applications, and leaves the syncing, servers, and end-to-end encryption to our framework.</p>
 <p>To build a quality application, most app developers today have to implement not only their own front-end clients, but also a backend architecture to handle model storage for their specific schema. With the growing trend of &#39;experimental&#39; and &#39;single-use&#39; applications, it becomes impractical to build a new server infrastructure for every application.</p>
 <p>Standard File is a reusable client and server system that allows you to deploy a &quot;dumb&quot; backend server that doesn&#39;t know or care about your data schema, and allows you to encrypt data on the client-side and sync it with the remote server.</p>
 <p>Standard File makes use of progressions in consumer device performance and capacity to enable end-to-end encryption on every platform. One can build any sort of secure and private application with a Standard File server, such as an <a href="https://standardnotes.org"> encrypted notes app like Standard Notes</a>, or any sort of todo or personal data app.</p>
@@ -141,27 +141,8 @@
 <ul>
 <li><em>Arbitrary</em></li>
 </ul>
-<p>An <code>Item</code> model has a <code>content</code> field. The <code>content</code> field stores a JSON encoded object that can be any thing the client needs to operate. There are proposed standards for structures (such as Notes and Tags used by the Standard Notes application suite).</p>
-<p>In this client-server model, servers are to be treated as dumb and uninformed. Because data is encrypted anyway, maintaining relationships between server side models is not very useful.</p>
-<p>The SF model pushes relationship mapping to the client, which clients today have no problem handling. This allows for improvements to be made to the data model on the client level, and not on the difficult-to-change server level.</p>
-<h2 id="server-models">Server Models</h2>
-<p>All server models must have the following properties:</p>
-<table>
-<thead>
-<tr>
-<th>name</th>
-<th>type</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>uuid</td>
-<td>String (or uuid for some databases)</td>
-<td>The unique identifier for this model.</td>
-</tr>
-</tbody>
-</table>
+<p>An <code>Item</code> model has a <code>content</code> field. The <code>content</code> field stores a JSON encoded object that can be any thing the client needs to operate. In this client-server model, servers are to be treated as dumb and uninformed.</p>
+<p>Relationships are handled by the client and not the server, which clients today have no problem handling. This allows for improvements to be made to the data model on the client level, and not on the difficult-to-change server level. It also allows for relationships to be encrypted.</p>
 <h1><a id='user'></a>User</h1>
 
 <p>A user model has the following properties:</p>
@@ -214,6 +195,11 @@
 </thead>
 <tbody>
 <tr>
+<td>uuid</td>
+<td>String (or uuid for some databases)</td>
+<td>The unique identifier for this model.</td>
+</tr>
+<tr>
 <td>content</td>
 <td>Text (Base64)</td>
 <td>The JSON string encoded structure of the note, encrypted.</td>
@@ -246,7 +232,7 @@
 </tbody>
 </table>
 <h2 id="client-structures">Client Structures</h2>
-<p>Client structures are stored in the <code>content</code> field of the <code>Item</code> model. All client structures have the following properties:</p>
+<p>Client structures are stored in the <code>content</code> field of the <code>Item</code> model. A client structure can have any property the client chooses, as well as the following:</p>
 <table>
 <thead>
 <tr>
@@ -282,7 +268,7 @@
 <h4 id="post-auth">POST auth</h4>
 <p><strong>Registers a user and returns a JWT</strong></p>
 <p><em>Params: email, password, pw_cost, pw_salt, pw_auth</em></p>
-<p><em>Note</em>: Password needs to be processed locally before being sent to the server. See Encryption for more. Never send the user&#39;s inputted password to the server.</p>
+<p><em>Note</em>: <code>password</code> needs to be processed locally before being sent to the server. See Encryption for more. Never send the user&#39;s inputted password to the server.</p>
 <p>Responses</p>
 <p><code>200</code></p>
 <pre><code>{"<span class="hljs-attribute">jwt</span>" : <span class="hljs-value"><span class="hljs-string">"..."</span></span>}
@@ -382,20 +368,12 @@
     </span>}
   ]
 </span>}
-</code></pre><h4 id="high-level-flow-user-wants-to-switch-clients-and-servers-">High-level flow, user wants to switch clients and servers:</h4>
-<ol>
-<li>User chooses &quot;Export&quot; option on client A, which is paired with server A.</li>
-<li>Client produces JSON file with all items unencrypted.</li>
-<li>User uploads JSON file with client B paired with Server B.</li>
-<li>Client B iterates over items and encrypts the content of each of them locally.</li>
-<li>Client B sends items (with encrypted item content) data to server B as normal POST request to <code>/items</code>.</li>
-</ol>
-<h1><a id='encryption'></a>Encryption</h1>
+</code></pre><h1><a id='encryption'></a>Encryption</h1>
 
 <p>Encryption and security should always be top of mind with Standard File.</p>
 <p>It is important that there exist a separation of concerns between the server and the client. That is, the client should not trust the server, and vice versa.</p>
 <p>Encryption keys are generated by stretching the user&#39;s input password using a <a href="https://en.wikipedia.org/wiki/Key_derivation_function">key derivation function.</a></p>
-<p>The resulting key is split in three — the first third is sent to the server as the user&#39;s password, the second third is saved locally as the user&#39;s master encryption key, and the last third is used as an authentication key. This way, the server can never compute the encryption key.</p>
+<p>The resulting key is split in three — the first third is sent to the server as the user&#39;s password, the second third is saved locally as the user&#39;s master encryption key, and the last third is used as an authentication key. In this setup, the server is never able to compute the encryption key or the user&#39;s original password.</p>
 <p>Note: client-server connections must be made securely through SSL/TLS.</p>
 <h4 id="elaboration-on-user-model-encryption-related-fields">Elaboration on User model encryption related fields</h4>
 <table>
@@ -408,15 +386,15 @@
 <tbody>
 <tr>
 <td>pw_cost</td>
-<td>The number of iterations to be used by the KDF. On native platforms, this should be around 60,000. However note that non-native clients (web clients not using WebCrypto) will not be able to handle any more than 5,000 iterations.</td>
+<td>The number of iterations to be used by the KDF. On native platforms, this should be around 60,000. However note that non-native clients (web clients not using WebCrypto) will not be able to handle any more than 3,000 iterations.</td>
 </tr>
 <tr>
 <td>pw_salt</td>
-<td>A salt for password derivation. This value is initially created by the client during registration</td>
+<td>A salt for password derivation. This value is initially created by the client during registration.</td>
 </tr>
 <tr>
 <td>pw_auth</td>
-<td>The HMAC-256 of <code>pw_cost</code> and <code>pw_salt</code> joined by a <code>:</code> character</td>
+<td>The HMAC-256 of <code>pw_cost</code> and <code>pw_salt</code> joined by a <code>:</code> character.</td>
 </tr>
 </tbody>
 </table>
@@ -457,7 +435,7 @@ pw_salt = SHA1:<span class="hljs-function"><span class="hljs-title">Hexdigest</s
 <li><p>Client registers with <code>email</code>, <code>pw</code>, <code>pw_cost</code>, <code>pw_salt</code>, and <code>pw_auth</code>.</p>
 </li>
 </ol>
-<h1><a id='item-encryption'></a>Encryption and Auth Keys</h1>
+<h1><a id='item-encryption'></a>Item Encryption</h1>
 
 <p>In general, when encrypting a string, one should use an IV so that two subsequent encryptions of the same content yield different results, and one should authenticate the data as to ascertain its authenticity and lack of tampering.</p>
 <p>In Standard File, two strings are encrypted for every item:</p>
@@ -465,13 +443,10 @@ pw_salt = SHA1:<span class="hljs-function"><span class="hljs-title">Hexdigest</s
 <li>The item&#39;s <code>content</code>.</li>
 <li>The item&#39;s <code>enc_item_key</code>.</li>
 </ul>
-<p>For every string, we need to generate and store a unique IV, as well as the resulting auth hash. To generate an auth hash, we&#39;ll use the auth key <code>ak</code> generated during the previous steps.</p>
-<h1><a id='item-encryption'></a>Item Encryption</h1>
-
 <h2 id="client-side">Client-side</h2>
 <p>An item is encrypted using a random key generated for each item.</p>
 <p><strong>Encryption:</strong></p>
-<p><em>Encryption version: 002.</em> (You&#39;ll use this version string as indicated below.)</p>
+<p><em>Encryption version: 002.</em></p>
 <p>Note that when encrypting/decrypting data, keys should be converted to the proper format your platform function supports. It&#39;s best to convert keys to binary data before running through any encryption/hashing algorithm.</p>
 <p>For every item:</p>
 <ol>
@@ -480,6 +455,19 @@ pw_salt = SHA1:<span class="hljs-function"><span class="hljs-title">Hexdigest</s
 <li>Encrypt <code>content</code> using <code>item_ek</code> and <code>item_ak</code> following the instructions &quot;Encrypting a string using the 002 scheme&quot; below and send to server as <code>content</code>.</li>
 <li>Encrypt <code>item_key</code> using the global <code>mk</code> and global <code>ak</code> following the instructions &quot;Encrypting a string using the 002 scheme&quot; below and send to server as <code>enc_item_key</code>.</li>
 </ol>
+<p><strong>Decryption:</strong></p>
+<p>Check the first 3 characters of the <code>content</code> string. This will be the encryption version.</p>
+<ul>
+<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md">here</a>.</p>
+</li>
+<li><p>If it is equal to &quot;002&quot;, which is the current scheme, decrypt as follows:</p>
+<ol>
+<li>Decrypt <code>enc_item_key</code> using the global <code>mk</code> and global <code>ak</code> according to the &quot;Decrypting a string using the 002 scheme&quot; instructions below to get <code>item_key</code>.</li>
+<li>Split <code>item_key</code> in half; set encryption key <code>item_ek = first_half</code> and authentication key <code>item_ak = second_half</code>.</li>
+<li>Decrypt <code>content</code> using <code>item_ek</code> and <code>item_ak</code> according to the &quot;Decrypting a string using the 002 scheme&quot; instructions below.</li>
+</ol>
+</li>
+</ul>
 <h3 id="encrypting-a-string-using-the-002-scheme-">Encrypting a string using the 002 scheme:</h3>
 <p>Given a <code>string_to_encrypt</code>, an <code>encryption_key</code>, and an <code>auth_key</code>:</p>
 <ol>
@@ -495,19 +483,6 @@ pw_salt = SHA1:<span class="hljs-function"><span class="hljs-title">Hexdigest</s
 <li>Generate the final result by combining the five components into a <code>:</code> separated string:<pre><code><span class="hljs-literal">result</span> = [<span class="hljs-string">"002"</span>, auth_hash, <span class="hljs-type">IV</span>, uuid, ciphertext].join(<span class="hljs-string">":"</span>)
 </code></pre></li>
 </ol>
-<p><strong>Decryption:</strong></p>
-<p>Check the first 3 characters of the <code>content</code> string. This will be the encryption version.</p>
-<ul>
-<li><p>If it is equal to &quot;001&quot;, which is a legacy scheme, decrypt according to the 001 instructions found <a href="https://github.com/standardfile/standardfile.github.io/blob/master/doc/spec-001.md">here</a>.</p>
-</li>
-<li><p>If it is equal to &quot;002&quot;, which is the current scheme, decrypt as follows:</p>
-<ol>
-<li>Decrypt <code>enc_item_key</code> using the global <code>mk</code> and global <code>ak</code> according to the &quot;Decrypting a string using the 002 scheme&quot; instructions below to get <code>item_key</code>.</li>
-<li>Split <code>item_key</code> in half; set encryption key <code>item_ek = first_half</code> and authentication key <code>item_ak = second_half</code>.</li>
-<li>Decrypt <code>content</code> using <code>item_ek</code> and <code>item_ak</code> according to the &quot;Decrypting a string using the 002 scheme&quot; instructions below.</li>
-</ol>
-</li>
-</ul>
 <h3 id="decrypting-a-string-using-the-002-scheme-">Decrypting a string using the 002 scheme:</h3>
 <p>Given a <code>string_to_decrypt</code>, an <code>encryption_key</code>, and an <code>auth_key</code>:</p>
 <ol>
