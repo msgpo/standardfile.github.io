@@ -282,7 +282,7 @@
 <h4 id="post-auth">POST auth</h4>
 <p><strong>Registers a user and returns a JWT</strong></p>
 <p><em>Params: email, password, pw_cost, pw_salt, pw_auth</em></p>
-<p><em>Note</em>: Passwords needs to be processed locally before being sent to the server. See Encryption for more. Never send the user&#39;s inputted password to the server.</p>
+<p><em>Note</em>: Password needs to be processed locally before being sent to the server. See Encryption for more. Never send the user&#39;s inputted password to the server.</p>
 <p>Responses</p>
 <p><code>200</code></p>
 <pre><code>{"<span class="hljs-attribute">jwt</span>" : <span class="hljs-value"><span class="hljs-string">"..."</span></span>}
@@ -428,7 +428,7 @@
 <ol>
 <li>Client makes GET request with user&#39;s email to <code>auth/params</code> to retrieve password salt, cost, and auth.</li>
 <li><p>Client computes <code>pw</code>, <code>mk</code>, and <code>ak</code>:</p>
-<pre><code>key = <span class="hljs-function"><span class="hljs-title">pbkdf2</span><span class="hljs-params">(uip, pw_salt, sha512, <span class="hljs-number">768</span>, pw_cost)</span></span>
+<pre><code>key = <span class="hljs-function"><span class="hljs-title">pbkdf2</span><span class="hljs-params">(uip, pw_salt, sha512, <span class="hljs-number">768</span>, pw_cost)</span></span> <span class="hljs-comment">// hex encoded</span>
 pw = key.<span class="hljs-function"><span class="hljs-title">substring</span><span class="hljs-params">(<span class="hljs-number">0</span>, key.length/<span class="hljs-number">3</span>)</span></span>
 mk = key.<span class="hljs-function"><span class="hljs-title">substring</span><span class="hljs-params">(key.length/<span class="hljs-number">3</span>, key.length/<span class="hljs-number">3</span>)</span></span>
 ak = key.<span class="hljs-function"><span class="hljs-title">substring</span><span class="hljs-params">(key.length/<span class="hljs-number">3</span> * <span class="hljs-number">2</span>, key.length/<span class="hljs-number">3</span>)</span></span>

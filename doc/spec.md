@@ -117,7 +117,7 @@ Standard File uses JSON Web Tokens (JWT) for authentication.
 
 *Params: email, password, pw_cost, pw_salt, pw_auth*
 
-*Note*: Passwords needs to be processed locally before being sent to the server. See Encryption for more. Never send the user's inputted password to the server.
+*Note*: Password needs to be processed locally before being sent to the server. See Encryption for more. Never send the user's inputted password to the server.
 
 Responses
 
@@ -315,7 +315,7 @@ Given a user inputted password `uip`, the client's job is to generate a password
 2.  Client computes `pw`, `mk`, and `ak`:
 
     ```
-    key = pbkdf2(uip, pw_salt, sha512, 768, pw_cost)
+    key = pbkdf2(uip, pw_salt, sha512, 768, pw_cost) // hex encoded
     pw = key.substring(0, key.length/3)
     mk = key.substring(key.length/3, key.length/3)
     ak = key.substring(key.length/3 * 2, key.length/3)
