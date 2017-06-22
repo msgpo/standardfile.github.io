@@ -1,45 +1,12 @@
 <h1><a id='intro'></a> Intro </h1>
 
-Many of us today are digital nomads: we go from app to app, service to service, looking for the best solution. And since most "solutions" are proprietary, we often have to say goodbye to our old data, or manually and painstakingly transfer it over.
+Standard File is a sync and encryption framework for web and native applications. It allows developers to focus on building great user-facing applications, and leaves the syncing, servers, and end-to-end encryption to our framework.
 
-Standard File is one account for every human. This account can store almost any data type, and supports strong encryption and privacy by default.
+To build a quality application, most app developers today have to implement not only their own front-end clients, but also a backend architecture to handle model storage for their specific schema. With the growing trend of 'experimental' and 'single-use' applications, it becomes impractical to build a new server infrastructure for every application.
 
-Why would you want a Standard File account?
+Standard File is a reusable client and server system that allows you to deploy a "dumb" backend server that doesn't know or care about your data schema, and allows you to encrypt data on the client-side and sync it with the remote server.
 
-1. **Convenience**. You don't have to manage hundreds of different accounts, and worry about backups if one of those services go offline. Your one Standard File account manages all your data across all applications that support the Standard File format.
-1. **Data lifetime**. The Standard File format is a growth-resistant format. Because it is a generalized and abstracted system, it can handle almost any application type without needing to change. This means your data is always easy to parse by applications. And, because the data format is simple, this makes it easy for developers to create new applications that parse your data and offer new utilities on top of this data.
-2. **More choices**. Today, when a company offers a service that's useful, it's hard to move to something else, even if you really want to. The Standard File system allows app developers to focus on creating great applications, without having to worry about managing servers. This means a richer ecosystem of great applications that don't lock you in.
-3. **Security**. All apps that use the Standard File system are required to encrypt data locally before sending that data to the server. This means that servers do not have to be trusted. In fact, even if your data was stolen from a hacked server, that data would be unreadable and useless to an attacker.
-4. **Privacy**. You can choose any Standard File hosting provider, or run a Standard File server of your own. Because the choice is yours, you can always go with the provider that offers the highest level of privacy. And if ultimately that isn't enough for you, you can easily run your own Standard File system for 100% privacy control.
-
-
-<h2><a id='getting-started'></a>Getting Started</h2>
-
-To get started with a Standard File account, find [apps](https://standardnotes.org) that support the Standard File format.
-
-These apps will ask you for a Standard File server location. You can use any of these free servers:
-
-https://n3.standardnotes.org
-
-Simply register for a Standard File account using one of the available apps.
-
-*Note: because your data is encrypted before being sent to the server, it is not necessarily important to "trust" these servers. This means you can choose any server and rest assured that your data is secure.*
-
-If you're tech savvy, you can even [host your own Standard File server](https://github.com/standardfile/ruby-server/wiki/Deploying-a-private-Standard-File-server-with-Amazon-EC2-and-Nginx).
-
-<h2><a id='developers'></a>Developers</h2>
-
-To build a quality application, most app developers today have to implement not only their own front-end clients, but also a backend architecture to handle model storage for their specific schema. With the growing trend of 'experimental' and 'single-use' applications, which frequently make their rounds on sites like Product Hunt, it becomes impractical to build a new server infrastructure for every application.
-
-Standard File makes use of progressions in consumer device performance and capacity. Handheld client devices such as smartphones today are more powerful than server architectures decades ago. And while it may have made sense back then to let the server handle all model and business logic for an application, today clients are plenty powerful to do this on their own.
-
-This is the paradigm that Standard File relies on, which allows for "server" related code to be handled by the client device instead. Because data logic is handled by the client device, this means end-to-end encryption can also come standard. The server is treated as a dummy model store, without knowledge of the contents.
-
-One can build any client application with the same Standard File server.
-
-The future vision of Standard File is for every person to have their own Standard File server, whether shared or private, that allows them to use one account for all their data, across multiple clients that offer different utilities. For example, one client could be a notes app. Another could be a desktop file sync. And yet another could be a photos manager. All these apps could be built off the same Standard File server. This makes it so that developers don't have to worry about building a secure back end system, and so that end users don't have to worry about data security and ownership.
-
-Today, [a robust notes system](https://standardnotes.org) has already been built on top of Standard File.
+Standard File makes use of progressions in consumer device performance and capacity to enable end-to-end encryption on every platform. One can build any sort of secure and private application with a Standard File server, such as an [ encrypted notes app like Standard Notes](https://standardnotes.org), or any sort of todo or personal data app.
 
 # Protocol Specification
 
@@ -49,12 +16,11 @@ _(For the 0.0.1 specification, see [here](https://github.com/standardfile/standa
 
 While most protocol specifications are hard to read and unnecessarily complex, Standard File aims to be a simple system that any developer can understand and implement.
 
-<h2><a id='implementations'></a>Implementations</h2>
+<h2><a id='implementations'></a>Server Implementations</h2>
 
 [Ruby Implementation](https://github.com/standardnotes/ruby-server)
 
 [Go Implementation](https://github.com/tectiv3/standardfile)
-
 
 <h2><a id='introduction'></a>Introduction</h2>
 
@@ -283,10 +249,6 @@ The export file is a JSON file of all the user's items, unencrypted.
           {
             "uuid": "901751a0-0b85-4636-93a3-682c4779b634",
             "content_type": "Tag"
-          },
-          {
-            "uuid": "023112fe-9066-481e-8a63-f15f27d3f904",
-            "content_type": "Tag"
           }
         ],
         "title": "...",
@@ -302,14 +264,6 @@ The export file is a JSON file of all the user's items, unencrypted.
         "references": [
           {
             "uuid": "94cba6b7-6b55-41d6-89a5-e3db8be9fbbf",
-            "content_type": "Note"
-          },
-          {
-            "uuid": "ada3ff00-85fa-4427-a883-652a84736715",
-            "content_type": "Note"
-          },
-          {
-            "uuid": "3162fe3a-1b5b-4cf5-b88a-afcb9996b23a",
             "content_type": "Note"
           }
         ],
@@ -494,7 +448,7 @@ For every received item:
 
 Check out the [client development guide](https://github.com/standardnotes/doc/blob/master/Client%20Development%20Guide.md) for a practical guide to developing an application on top of Standard File.
 
-If you're a developer, see [Developer Resources](https://standardnotes.org/developers).
+See [Standard Notes Developer Resources](https://standardnotes.org/developers).
 
 Join the [Slack group](https://standardnotes.org/slack) to discuss implementation details and ask any questions you may have.
 
