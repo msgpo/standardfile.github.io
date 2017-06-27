@@ -405,7 +405,7 @@
 <p><strong>Login Steps</strong></p>
 <ol>
 <li>Client makes GET request with user&#39;s email to <code>auth/params</code> to retrieve password salt, cost, and auth.</li>
-<li><p>Client computes <code>pw</code>, <code>mk</code>, and <code>ak</code>:</p>
+<li><p>Client computes <code>pw</code>, <code>mk</code>, and <code>ak</code> using PBKDF2 with SHA512 as the hashing function and output length of 768 bits:</p>
 <pre><code>key = <span class="hljs-function"><span class="hljs-title">pbkdf2</span><span class="hljs-params">(uip, pw_salt, sha512, <span class="hljs-number">768</span>, pw_cost)</span></span> <span class="hljs-comment">// hex encoded</span>
 pw = key.<span class="hljs-function"><span class="hljs-title">substring</span><span class="hljs-params">(<span class="hljs-number">0</span>, key.length/<span class="hljs-number">3</span>)</span></span>
 mk = key.<span class="hljs-function"><span class="hljs-title">substring</span><span class="hljs-params">(key.length/<span class="hljs-number">3</span>, key.length/<span class="hljs-number">3</span>)</span></span>

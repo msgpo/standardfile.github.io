@@ -295,7 +295,7 @@ Given a user inputted password `uip`, the client's job is to generate a password
 **Login Steps**
 
 1.  Client makes GET request with user's email to `auth/params` to retrieve password salt, cost, and auth.
-2.  Client computes `pw`, `mk`, and `ak`:
+2.  Client computes `pw`, `mk`, and `ak` using PBKDF2 with SHA512 as the hashing function and output length of 768 bits:
 
     ```
     key = pbkdf2(uip, pw_salt, sha512, 768, pw_cost) // hex encoded
