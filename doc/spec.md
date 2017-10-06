@@ -18,7 +18,7 @@ While most protocol specifications are hard to read and unnecessarily complex, S
 
 <h2><a id='implementations'></a>Server Implementations</h2>
 
-[Ruby Implementation](https://github.com/standardnotes/ruby-server)
+[Ruby Implementation](https://github.com/standardfile/ruby-server)
 
 [Go Implementation](https://github.com/tectiv3/standardfile)
 

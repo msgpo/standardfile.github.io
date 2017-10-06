@@ -51,7 +51,7 @@ While most protocol specifications are hard to read and unnecessarily complex, S
 
 <h2><a id='implementations'></a>Implementations</h2>
 
-[Ruby Server Implementation](https://github.com/standardnotes/ruby-server)
+[Ruby Server Implementation](https://github.com/standardfile/ruby-server)
 
 
 <h2><a id='introduction'></a>Introduction</h2>
