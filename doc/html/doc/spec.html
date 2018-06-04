@@ -244,6 +244,11 @@
 </thead>
 <tbody>
 <tr>
+<td>appData</td>
+<td>Dictionary</td>
+<td>A domain based dictionary whose content must be preserved between platforms. <code>appData[domain]</code> contains data the client stores in the item.</td>
+</tr>
+<tr>
 <td>references</td>
 <td>Array</td>
 <td>A metadata array of other <code>Item</code> uuids this model is related to and their respective <code>content_type</code>. See sample below.</td>
@@ -417,7 +422,7 @@ ak = key.<span class="hljs-function"><span class="hljs-title">substring</span><s
 <ol>
 <li>Client chooses default for <code>pw_cost</code> (minimum 100,000).</li>
 <li><p>Client generates <code>pw_nonce</code>:</p>
-<pre><code>pw_nonce = SHA256:<span class="hljs-function"><span class="hljs-title">Hexdigest</span><span class="hljs-params">(random_string(<span class="hljs-number">256</span>)</span></span>)
+<pre><code>pw_nonce = <span class="hljs-function"><span class="hljs-title">random_string</span><span class="hljs-params">(<span class="hljs-number">256</span>)</span></span>
 </code></pre></li>
 <li><p>Client computes <code>pw</code>, <code>mk</code>, and <code>ak</code> using step (3) from Login Steps.</p>
 </li>

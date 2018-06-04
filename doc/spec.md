@@ -78,6 +78,7 @@ Client structures are stored in the `content` field of the `Item` model. A clien
 
 | name | type | description |
 | --- | --- | --- |
+| appData | Dictionary | A domain based dictionary whose content must be preserved between platforms. `appData[domain]` contains data the client stores in the item.
 | references | Array | A metadata array of other `Item` uuids this model is related to and their respective `content_type`. See sample below.
 
 `references` array sample:
@@ -316,7 +317,7 @@ Given a user inputted password `uip`, the client's job is to generate a password
 1.  Client generates `pw_nonce`:
 
     ```
-    pw_nonce = SHA256:Hexdigest(random_string(256))
+    pw_nonce = random_string(256)
     ```
 
 1.  Client computes `pw`, `mk`, and `ak` using step (3) from Login Steps.
