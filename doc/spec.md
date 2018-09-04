@@ -24,6 +24,10 @@ While most protocol specifications are hard to read and unnecessarily complex, S
 
 [Go Implementation](https://github.com/tectiv3/standardfile)
 
+<h2><a id='implementations'></a>Client Libraries</h2>
+
+[SFJS - JavaScript Library](https://github.com/standardfile/sfjs)
+
 <h2><a id='introduction'></a>Introduction</h2>
 
 This document outlines the specifications for the client-server communications of the Standard File system. Any client can communicate with a Standard File server as long as it understands the server's requirements.
