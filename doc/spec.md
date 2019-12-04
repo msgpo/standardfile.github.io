@@ -1,3 +1,9 @@
+# Deprecated as of December 2019
+
+The original idea behind Standard File was to create one place for many apps to store your data. However, this requires a different architecture than what SF provides today and has always provided. Over the last 3 years, SF has very clearly just been a syncing server for [Standard Notes](https://standardnotes.org).
+
+To fulfill its original mission of multi-app use, Standard File requires a different architecture and mode of being altogether, one which we have not had the opportunity to pursue in the last few years. For a more generalized multi-purpose server solution fulfilling a similar premise to the original SF premise, you can take a look at [userbase.dev](https://userbase.dev).
+
 <h1><a id='intro'></a> Intro </h1>
 
 Standard File is a sync and encryption library for web and native applications. It allows developers to focus on building great user-facing applications, and leaves the syncing, servers, and end-to-end encryption to this library.

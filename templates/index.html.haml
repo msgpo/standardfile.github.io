@@ -56,25 +56,9 @@
         .project-name Standard File
         .project-tagline End-to-end encryption for web, mobile, and desktop applications.
 
-        .email-subscribe-wrapper
-          .content
-            .title Want to get involved?
-            .subtitle Subscribe to Standard File announcements.
-            %link{:href => "//cdn-images.mailchimp.com/embedcode/slim-10_7.css", :rel => "stylesheet", :type => "text/css"}/
-            :css
-              #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; width: 100%;}
-            #mc_embed_signup
-              %form#mc-embedded-subscribe-form.validate{:action => "//standardnotes.us14.list-manage.com/subscribe/post?u=f703bdd7fd7cd0923a94b3bd3&amp;id=34d4e66a23", :method => "post", :name => "mc-embedded-subscribe-form", :novalidate => "", :target => "_blank"}
-                #mc_embed_signup_scroll
-                  %input#mce-EMAIL.email{:name => "EMAIL", :placeholder => "email address", :required => "", :type => "email", :value => ""}
-                  / real people should not fill this in and expect good things - do not remove this or risk form bot signups
-                  %div{"aria-hidden" => "true", :style => "position: absolute; left: -5000px;"}
-                    %input{:name => "b_f703bdd7fd7cd0923a94b3bd3_34d4e66a23", :tabindex => "-1", :type => "text", :value => ""}/
-                  .clear
-                    %input#mc-embedded-subscribe.button{:name => "subscribe", :type => "submit", :value => "Subscribe"}
-            .social
-              %a.icon-twitter{"href" => "https://twitter.com/standardnotes", "target" => "_blank"}
-              %a.icon-github{"href" => "https://github.com/standardfile", "target" => "_blank"}
-              %a.icon-reddit{"href" => "https://www.reddit.com/r/StandardNotes/", "target" => "_blank"}
+        .social
+          %a.icon-twitter{"href" => "https://twitter.com/standardnotes", "target" => "_blank"}
+          %a.icon-github{"href" => "https://github.com/standardfile", "target" => "_blank"}
+          %a.icon-reddit{"href" => "https://www.reddit.com/r/StandardNotes/", "target" => "_blank"}
 
       %ng-include{"src" => "'doc/html/doc/spec.html'"}
